@@ -1,0 +1,61 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  username  String   @unique
+  email     String   @unique
+  address   Address  @relation(fields: [addressId], references: [id])
+  addressId Int
+  phone     String
+  website   String
+  company   Company  @relation(fields: [companyId], references: [id])
+  companyId Int
+}
+
+model Address {
+  id       Int    @id @default(autoincrement())
+  street   String
+  suite    String
+  city     String
+  zipcode  String
+  geo      Geo    @relation(fields: [geoId], references: [id])
+  geoId    Int
+
+  User User[]
+}
+
+model Geo {
+  id  Int    @id @default(autoincrement())
+  lat String
+  lng String
+
+  Address Address[]
+}
+
+model Company {
+  id          Int    @id @default(autoincrement())
+  name        String
+  catchPhrase String
+  bs          String
+
+  User User[]
+}
+
+model Credential {
+  id          Int    @id @default(autoincrement())
+  name        String
+  email       String @unique
+  password    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
